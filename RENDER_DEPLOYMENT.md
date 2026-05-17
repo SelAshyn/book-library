@@ -154,10 +154,12 @@ git push origin main
    - **Branch**: `main`
    - **Root Directory**: `backend`  ← Important!
    - **Build Command**: `./build.sh`
-   - **Start Command**: `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2`
+   - **Start Command**: `gunicorn config.wsgi:application --workers 2` ← Important!
    - **Plan**: `Starter` (recommended for always-on service)
 
 4. Click **Advanced** and set environment variables
+
+**⚠️ Important**: Make sure Start Command is set to `gunicorn config.wsgi:application --workers 2` in the Render dashboard. This overrides any defaults.
 
 ---
 
@@ -267,6 +269,15 @@ NEXT_PUBLIC_API_URL=https://book-library-backend.onrender.com/api
 ---
 
 ## Troubleshooting
+
+### ModuleNotFoundError: No module named 'your_application'
+- **Cause**: Render is using a default start command instead of the one you specified
+- **Solution**: 
+  1. Go to your Render service dashboard
+  2. Settings → Build & Deploy
+  3. Find **Start Command** field
+  4. Set it to: `gunicorn config.wsgi:application --workers 2`
+  5. Redeploy by pushing to GitHub or clicking "Manual Deploy"
 
 ### Cold Starts
 - Free tier services sleep after 15 mins of inactivity
