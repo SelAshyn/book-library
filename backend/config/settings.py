@@ -60,33 +60,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Support DATABASE_URL (Render provides this automatically)
-import urllib.parse
+import dj_database_url
 
-_database_url = os.environ.get('DATABASE_URL')
-if _database_url:
-    _parsed = urllib.parse.urlparse(_database_url)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': _parsed.path.lstrip('/'),
-            'USER': _parsed.username,
-            'PASSWORD': _parsed.password,
-            'HOST': _parsed.hostname,
-            'PORT': str(_parsed.port or 5432),
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'booklibrary'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=False,
+    )
+}
 
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
