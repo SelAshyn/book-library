@@ -13,7 +13,7 @@
 
 ### 1.1 Create `render.yaml` Configuration
 
-Create a `render.yaml` file in your project root (or `backend/render.yaml`):
+Create a `render.yaml` file in `backend/` folder:
 
 ```yaml
 services:
@@ -21,9 +21,9 @@ services:
     name: book-library-backend
     env: python
     region: oregon
-    plan: free
+    plan: starter
     buildCommand: ./build.sh
-    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2
     envVars:
       - key: DEBUG
         value: "False"
@@ -33,20 +33,30 @@ services:
         generateValue: true
       - key: ALLOWED_HOSTS
         value: book-library-backend.onrender.com
-      - fromGroup: postgres
+      - key: PORT
+        value: "8000"
+
+  - type: pserv
+    name: book-library-db
+    env: postgres
+    region: oregon
+    plan: starter
+    ipAllowList: []
+    databaseName: booklibrary
+    user: booklibrary
 ```
 
 ### 1.2 Create `build.sh` Script
 
-Create `build.sh` in project root:
+Create `build.sh` in `backend/` folder:
 
 ```bash
 #!/bin/bash
 set -o errexit
 
-pip install -r backend/requirements.txt
-python backend/manage.py collectstatic --noinput
-python backend/manage.py migrate
+pip install -r requirements.txt
+python manage.py collectstatic --noinput
+python manage.py migrate
 ```
 
 Make it executable:
@@ -102,13 +112,19 @@ dj-database-url==2.2.0
 
 ---
 
-## Step 2: Push Code to GitHub
+## Step 2: Connect Render to GitHub
 
+1. Push code to GitHub:
 ```bash
 git add .
-git commit -m "Prepare for Render deployment"
+git commit -m "Add backend Render configuration"
 git push origin main
 ```
+
+2. In Render dashboard, when connecting the repo:
+   - Select your GitHub repository
+   - **Important**: Set the Root Directory to `backend/`
+   - This ensures Render looks for render.yaml in the backend folder
 
 ---
 
@@ -121,7 +137,7 @@ git push origin main
 3. Fill in:
    - **Name**: `book-library-db`
    - **Database**: `booklibrary`
-   - **User**: `postgres`
+   - **User**: `booklibrary` (not postgres - reserved in Render)
    - **Region**: Same as backend (Oregon)
    - **Version**: 15+
 4. Click **Create Database**
@@ -136,9 +152,10 @@ git push origin main
    - **Environment**: `Python 3`
    - **Region**: `Oregon`
    - **Branch**: `main`
+   - **Root Directory**: `backend`  ← Important!
    - **Build Command**: `./build.sh`
    - **Start Command**: `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2`
-   - **Plan**: `Free` or `Starter` (for better performance)
+   - **Plan**: `Starter` (recommended for always-on service)
 
 4. Click **Advanced** and set environment variables
 
@@ -305,7 +322,7 @@ python backend/manage.py collectstatic --noinput
 - **Free Tier**: $0/month (with limitations)
   - Cold starts (15 min inactivity)
   - Limited resources
-  
+
 - **Starter Plan**: $7/month
   - Always-on
   - Better performance

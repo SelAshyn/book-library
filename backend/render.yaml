@@ -25,4 +25,4 @@ services:
     plan: starter
     ipAllowList: []
     databaseName: booklibrary
-    user: postgres
+    user: booklibrary
