@@ -123,7 +123,7 @@ export default function DashboardSidebar() {
             </aside>
 
             {/* Mobile Navigation */}
-            <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-3 py-2">
+            <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 px-3 py-3 safe-area-pb">
                 <div className="flex justify-around items-center">
                     {NAV.map(({ href, label, icon }) => {
                         const active = pathname === href;
@@ -139,7 +139,7 @@ export default function DashboardSidebar() {
                                 style={{ fontFamily: 'Manrope' }}
                             >
                                 <span className={active ? 'text-orange-500' : 'text-gray-400'}>{icon}</span>
-                                <span className="hidden sm:inline">{label}</span>
+                                <span className="text-[10px]">{label}</span>
                             </Link>
                         );
                     })}
