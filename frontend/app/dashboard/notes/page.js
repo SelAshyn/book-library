@@ -77,22 +77,20 @@ export default function NotesPage() {
             </div>
 
             {/* Summary cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4">
-                    <span className="text-2xl">📝</span>
-                    <p className="text-2xl font-bold text-orange-600 mt-2" style={{ fontFamily: 'Outfit' }}>{booksWithNotes}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Books with notes</p>
-                </div>
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4">
-                    <span className="text-2xl">✍️</span>
-                    <p className="text-2xl font-bold text-blue-600 mt-2" style={{ fontFamily: 'Outfit' }}>{totalWords.toLocaleString()}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Total words written</p>
-                </div>
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-4">
-                    <span className="text-2xl">📚</span>
-                    <p className="text-2xl font-bold text-purple-600 mt-2" style={{ fontFamily: 'Outfit' }}>{books.length - booksWithNotes}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Books without notes</p>
-                </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+                {[
+                    { icon: '📝', value: booksWithNotes, label: 'Books with notes', bg: 'bg-orange-50', border: 'border-orange-200', color: 'text-orange-600' },
+                    { icon: '✍️', value: totalWords.toLocaleString(), label: 'Total words written', bg: 'bg-blue-50', border: 'border-blue-200', color: 'text-blue-600' },
+                    { icon: '📚', value: books.length - booksWithNotes, label: 'Books without notes', bg: 'bg-purple-50', border: 'border-purple-200', color: 'text-purple-600' },
+                ].map(({ icon, value, label, bg, border, color }) => (
+                    <div key={label} className={`${bg} border-2 ${border} rounded-xl p-2.5 sm:p-4 flex items-center gap-2.5 sm:block`}>
+                        <span className="text-xl sm:text-2xl shrink-0">{icon}</span>
+                        <div className="sm:mt-2 min-w-0">
+                            <p className={`text-lg sm:text-2xl font-bold leading-none ${color}`} style={{ fontFamily: 'Outfit' }}>{value}</p>
+                            <p className="text-xs text-gray-500 font-medium mt-0.5 truncate" style={{ fontFamily: 'Manrope' }}>{label}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Search + filter */}
@@ -134,14 +132,13 @@ export default function NotesPage() {
 
             {/* Book list */}
             {loading ? (
-                <div className="space-y">
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
                     {Array.from({ length: 5 }).map((_, i) => (
-                        <div key={i} className="bg-white rounded-2xl border-2 border-gray-100 p-5 animate-pulse flex gap-4">
-                            <div className="w-12 h-16 bg-gray-200 rounded-xl shrink-0" />
-                            <div className="flex-1 space-y-2">
-                                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                                <div className="h-3 bg-gray-200 rounded w-1/3" />
+                        <div key={i} className="bg-white rounded-2xl border-2 border-gray-100 animate-pulse overflow-hidden">
+                            <div className="w-full bg-gray-200" style={{ aspectRatio: '2/3' }} />
+                            <div className="p-3 space-y-2">
                                 <div className="h-3 bg-gray-200 rounded w-3/4" />
+                                <div className="h-2.5 bg-gray-200 rounded w-1/2" />
                             </div>
                         </div>
                     ))}
@@ -155,7 +152,7 @@ export default function NotesPage() {
                     </p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
                     {filtered.map((book) => {
                         const status = STATUS_CONFIG[book.status] ?? STATUS_CONFIG.PLANNED;
                         const gradient = GRADIENTS[book.title.charCodeAt(0) % GRADIENTS.length];
@@ -165,49 +162,43 @@ export default function NotesPage() {
                         return (
                             <div
                                 key={book.id}
-                                className="bg-white border-2 border-gray-100 rounded-2xl p-5 hover:border-orange-200 hover:shadow-lg transition-all cursor-pointer flex flex-col overflow-hidden"
+                                className="bg-white border-2 border-gray-100 rounded-2xl hover:border-orange-200 hover:shadow-lg transition-all cursor-pointer flex flex-col overflow-hidden"
                                 onClick={() => setActiveBook(book)}
                             >
-                                {/* Cover */}
-                                <div className={`w-full h-40 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-4 overflow-hidden shrink-0`}>
+                                {/* Cover — 2:3 book aspect ratio */}
+                                <div className={`relative w-full bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 overflow-hidden`}
+                                    style={{ aspectRatio: '2/3' }}>
                                     {book.cover_url ? (
                                         <img src={book.cover_url} alt={book.title} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-5xl">📖</span>
+                                        <span className="text-4xl">📖</span>
+                                    )}
+                                    {/* Notes indicator badge */}
+                                    {hasNotes && (
+                                        <div className="absolute bottom-2 right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center shadow-md">
+                                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </div>
                                     )}
                                 </div>
 
-                                {/* Book Info */}
-                                <div className="flex-1 flex flex-col">
-                                    <div className="mb-3">
-                                        <h3 className="font-bold text-black text-sm leading-tight line-clamp-2" style={{ fontFamily: 'Outfit' }}>
-                                            {book.title}
-                                        </h3>
-                                        <p className="text-xs text-gray-400 mt-1" style={{ fontFamily: 'Manrope' }}>{book.author}</p>
-                                    </div>
-
-                                    {/* Status badge */}
-                                    <div className="mb-3">
-                                        <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${status.color}`} style={{ fontFamily: 'Manrope' }}>
-                                            {status.label}
-                                        </span>
-                                    </div>
-
-                                    {/* Notes preview or call-to-action */}
+                                {/* Info */}
+                                <div className="p-3 flex flex-col flex-1">
+                                    <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mb-1.5 w-fit ${status.color}`} style={{ fontFamily: 'Manrope' }}>
+                                        {status.label}
+                                    </span>
+                                    <h3 className="font-bold text-black text-xs leading-tight line-clamp-2 mb-1" style={{ fontFamily: 'Outfit' }}>
+                                        {book.title}
+                                    </h3>
+                                    <p className="text-xs text-gray-400 mb-2 truncate" style={{ fontFamily: 'Manrope' }}>{book.author}</p>
                                     <div className="mt-auto">
                                         {hasNotes ? (
-                                            <>
-                                                <p className="text-xs text-gray-500 line-clamp-3 italic leading-relaxed mb-2" style={{ fontFamily: 'Manrope' }}>
-                                                    "{book.notes}"
-                                                </p>
-                                                <p className="text-xs text-orange-500 font-semibold" style={{ fontFamily: 'Manrope' }}>
-                                                    {words} {words === 1 ? 'word' : 'words'} · Click to edit
-                                                </p>
-                                            </>
-                                        ) : (
-                                            <p className="text-xs text-gray-300 italic" style={{ fontFamily: 'Manrope' }}>
-                                                No notes yet — click to add
+                                            <p className="text-xs text-orange-500 font-semibold" style={{ fontFamily: 'Manrope' }}>
+                                                {words} {words === 1 ? 'word' : 'words'}
                                             </p>
+                                        ) : (
+                                            <p className="text-xs text-gray-300 italic" style={{ fontFamily: 'Manrope' }}>No notes yet</p>
                                         )}
                                     </div>
                                 </div>

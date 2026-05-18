@@ -237,22 +237,20 @@ export default function VocabularyPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4">
-                    <span className="text-2xl">🔤</span>
-                    <p className="text-2xl font-bold text-orange-600 mt-2" style={{ fontFamily: 'Outfit' }}>{words.length}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Words collected</p>
-                </div>
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4">
-                    <span className="text-2xl">📚</span>
-                    <p className="text-2xl font-bold text-blue-600 mt-2" style={{ fontFamily: 'Outfit' }}>{booksWithWords.length}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Books sourced</p>
-                </div>
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-4">
-                    <span className="text-2xl">🔡</span>
-                    <p className="text-2xl font-bold text-purple-600 mt-2" style={{ fontFamily: 'Outfit' }}>{letters.length}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>Letters covered</p>
-                </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+                {[
+                    { icon: '🔤', value: words.length, label: 'Words collected', bg: 'bg-orange-50', border: 'border-orange-200', color: 'text-orange-600' },
+                    { icon: '📚', value: booksWithWords.length, label: 'Books sourced', bg: 'bg-blue-50', border: 'border-blue-200', color: 'text-blue-600' },
+                    { icon: '🔡', value: letters.length, label: 'Letters covered', bg: 'bg-purple-50', border: 'border-purple-200', color: 'text-purple-600' },
+                ].map(({ icon, value, label, bg, border, color }) => (
+                    <div key={label} className={`${bg} border-2 ${border} rounded-xl p-2.5 sm:p-4 flex items-center gap-2.5 sm:block`}>
+                        <span className="text-xl sm:text-2xl shrink-0">{icon}</span>
+                        <div className="sm:mt-2 min-w-0">
+                            <p className={`text-lg sm:text-2xl font-bold leading-none ${color}`} style={{ fontFamily: 'Outfit' }}>{value}</p>
+                            <p className="text-xs text-gray-500 font-medium mt-0.5 truncate" style={{ fontFamily: 'Manrope' }}>{label}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Search + book filter */}
