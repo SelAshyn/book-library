@@ -13,13 +13,18 @@ from users.models import UserProfile
 def _initialize_firebase():
     """Initialize Firebase Admin SDK once."""
     if not firebase_admin._apps:
-        # Support base64-encoded credentials for cloud deployments
         b64 = os.environ.get('FIREBASE_CREDENTIALS_BASE64')
         if b64:
-            cred_dict = json.loads(base64.b64decode(b64).decode())
-            cred = credentials.Certificate(cred_dict)
+            try:
+                cred_dict = json.loads(base64.b64decode(b64).decode())
+                cred = credentials.Certificate(cred_dict)
+            except Exception as e:
+                raise RuntimeError(f'Failed to decode FIREBASE_CREDENTIALS_BASE64: {e}')
         else:
-            cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+            cred_path = settings.FIREBASE_CREDENTIALS
+            if not os.path.exists(cred_path):
+                raise RuntimeError(f'Firebase credentials file not found: {cred_path}. Set FIREBASE_CREDENTIALS_BASE64 env var.')
+            cred = credentials.Certificate(cred_path)
         firebase_admin.initialize_app(cred)
 
 
@@ -41,7 +46,10 @@ class FirebaseAuthentication(BaseAuthentication):
         if not id_token:
             return None
 
-        _initialize_firebase()
+        try:
+            _initialize_firebase()
+        except RuntimeError as e:
+            raise AuthenticationFailed(str(e))
 
         try:
             decoded_token = firebase_auth.verify_id_token(id_token)

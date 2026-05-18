@@ -88,6 +88,8 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     'http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001'
 ).split(',')
 
+CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+
 # Firebase token authentication — no simplejwt needed
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
