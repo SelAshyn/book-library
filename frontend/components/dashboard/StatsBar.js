@@ -18,12 +18,14 @@ export default function StatsBar({ books }) {
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
             {stats.map(({ icon, value, label, bg, border, valueColor }) => (
-                <div key={label} className={`${bg} border-2 ${border} rounded-2xl p-4`}>
-                    <span className="text-2xl">{icon}</span>
-                    <p className={`text-2xl font-bold mt-2 ${valueColor}`} style={{ fontFamily: 'Outfit' }}>{value}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5" style={{ fontFamily: 'Manrope' }}>{label}</p>
+                <div key={label} className={`${bg} border-2 ${border} rounded-xl p-2.5 sm:p-4 flex items-center gap-2.5 sm:block`}>
+                    <span className="text-xl sm:text-2xl shrink-0">{icon}</span>
+                    <div className="sm:mt-2 min-w-0">
+                        <p className={`text-lg sm:text-2xl font-bold leading-none ${valueColor}`} style={{ fontFamily: 'Outfit' }}>{value}</p>
+                        <p className="text-xs text-gray-500 font-medium mt-0.5 truncate" style={{ fontFamily: 'Manrope' }}>{label}</p>
+                    </div>
                 </div>
             ))}
         </div>
