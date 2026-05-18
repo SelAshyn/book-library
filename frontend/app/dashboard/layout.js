@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import DashboardSidebar from '../../components/dashboard/Sidebar';
 import DashboardTopbar from '../../components/dashboard/Topbar';
+import FeedbackButton from '../../components/dashboard/FeedbackButton';
 
 export default function DashboardLayout({ children }) {
     const { user, loading } = useAuth();
@@ -41,6 +42,7 @@ export default function DashboardLayout({ children }) {
                 <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-28 lg:pb-8">
                     {children}
                 </main>
+                <FeedbackButton />
             </div>
         </div>
     );
