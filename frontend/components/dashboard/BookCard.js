@@ -50,8 +50,9 @@ export default function BookCard({ book, onEdit, onDelete, onStatusChange, onNot
     return (
         <>
             <div className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-orange-200 hover:shadow-lg transition-all duration-200 flex flex-col">
-            {/* Cover */}
-            <div className={`relative h-40 bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0`}>
+            {/* Cover — 2:3 book aspect ratio (6×9) */}
+            <div className={`relative w-full bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 overflow-hidden`}
+                style={{ aspectRatio: '2/3' }}>
                 {book.cover_url ? (
                     <img src={book.cover_url} alt={book.title} className="w-full h-full object-cover" />
                 ) : (
@@ -89,7 +90,7 @@ export default function BookCard({ book, onEdit, onDelete, onStatusChange, onNot
             </div>
 
             {/* Body */}
-            <div className="p-4 flex flex-col flex-1">
+            <div className="p-3 flex flex-col flex-1">
                 <div className="flex items-center gap-1.5 mb-2">
                     <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${status.color}`} style={{ fontFamily: 'Manrope' }}>

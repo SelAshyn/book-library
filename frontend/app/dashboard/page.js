@@ -149,19 +149,21 @@ export default function DashboardPage() {
 
             {/* Grid */}
             {fetchLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
                     {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="bg-white rounded-2xl border-2 border-gray-100 p-5 animate-pulse">
-                            <div className="w-full h-40 bg-gray-200 rounded-xl mb-4" />
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-                            <div className="h-3 bg-gray-200 rounded w-1/2" />
+                        <div key={i} className="bg-white rounded-2xl border-2 border-gray-100 animate-pulse">
+                            <div className="w-full bg-gray-200 rounded-t-2xl" style={{ aspectRatio: '2/3' }} />
+                            <div className="p-3 space-y-2">
+                                <div className="h-3 bg-gray-200 rounded w-3/4" />
+                                <div className="h-2.5 bg-gray-200 rounded w-1/2" />
+                            </div>
                         </div>
                     ))}
                 </div>
             ) : filtered.length === 0 ? (
                 <EmptyState tab={activeTab} search={search} onAdd={openAdd} />
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
                     {filtered.map((book) => (
                         <BookCard
                             key={book.id}
