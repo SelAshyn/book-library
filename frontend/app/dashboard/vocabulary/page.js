@@ -354,8 +354,8 @@ export default function VocabularyPage() {
                                             </p>
                                         )}
 
-                                        {/* Actions — visible on hover */}
-                                        <div className="flex gap-2 pt-1 border-t border-gray-50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {/* Actions — always visible on touch, hover-only on pointer devices */}
+                                        <div className="flex gap-2 pt-1 border-t border-gray-50 opacity-100 [@media(hover:hover)]:opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => openEdit(w)}
                                                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-all"
                                                 style={{ fontFamily: 'Manrope' }}>

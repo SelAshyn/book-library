@@ -57,8 +57,8 @@ export default function BookCard({ book, onEdit, onDelete, onStatusChange, onNot
                 ) : (
                     <span className="text-5xl opacity-60">📖</span>
                 )}
-                {/* Hover actions */}
-                <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Hover actions — always visible on touch, hover-only on pointer devices */}
+                <div className="absolute top-2 right-2 flex gap-1.5 opacity-100 [@media(hover:hover)]:opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onClick={onNotes}
                         className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center text-gray-600 hover:text-yellow-600 hover:bg-white transition-all shadow-sm"
                         aria-label="Notes">
